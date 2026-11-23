@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodata Diri - Studi Kasus Routing</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; margin: 0; padding: 0; color: #333; }
+        
+        /* Navigasi Atas */
+        nav { background-color: #1e293b; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav .brand { color: #fff; font-weight: bold; font-size: 18px; }
+        nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-weight: 500; padding: 6px 12px; border-radius: 5px; }
+        nav a:hover, nav a.active { background-color: #3b82f6; color: #fff; }
+
+        /* Container Utama */
+        .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        
+        /* Tampilan Publik */
+        .welcome-banner { background: #eff6ff; border-left: 5px solid #3b82f6; padding: 20px; border-radius: 6px; margin-bottom: 25px; }
+        .welcome-banner h1 { margin: 0; color: #1d4ed8; font-size: 24px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; }
+        td.label { font-weight: bold; width: 35%; color: #475569; }
+
+        /* Tampilan Form Admin */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; color: #334155; }
+        input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+        button { background-color: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: bold; }
+        button:hover { background-color: #1d4ed8; }
+        button.reset-btn { background-color: #64748b; margin-left: 10px; }
+        .alert { background-color: #dcfce7; color: #166534; padding: 12px; border-radius: 6px; margin-bottom: 20px; display: none; }
+        
+        /* Utility Sembunyikan Halaman */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- MENU NAVIGASI ROUTE -->
+    <nav>
+        <div class="brand">Sistem Biodata</div>
+        <div>
+            <a href="#/" id="nav-public">Halaman Publik (/)</a>
+            <a href="#/admin" id="nav-admin">Management Admin (/admin)</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- ========================================== -->
+        <!-- 1. ROUTE PUBLIK / ROOT PATH (#/)           -->
+        <!-- ========================================== -->
+        <section id="view-public">
+            <div class="welcome-banner">
+                <h1 id="pub-welcome">Selamat Datang di Profil Saya!</h1>
+            </div>
+
+            <h2>Biodata Diri</h2>
+            <table>
+                <tr>
+                    <td class="label">Nama Lengkap</td>
+                    <td id="pub-nama">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Kelas / Jurusan</td>
+                    <td id="pub-kelas">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Alamat</td>
+                    <td id="pub-alamat">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Hobi</td>
+                    <td id="pub-hobi">-</td>
+                </tr>
+                <tr>
+                    <td class="label">Tentang Saya</td>
+                    <td id="pub-tentang">-</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 2. ROUTE MANAGEMENT ADMIN (#/admin)        -->
+        <!-- ========================================== -->
+        <section id="view-admin" class="hidden">
+            <h2>Panel Management Admin</h2>
+            <p style="color: #64748b; font-size: 14px;">Ubah formulir di bawah ini untuk memperbarui konten pada halaman utama (Root Path).</p>
+            
+            <div id="notif-sukses" class="alert">Konten root path berhasil diperbarui!</div>
+
+            <form id="form-admin">
+                <div class="form-group">
+                    <label>Welcome Message (Judul Utama Root Path)</label>
+                    <input type="text" id="in-welcome" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="in-nama" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kelas / Jurusan</label>
+                    <input type="text" id="in-kelas" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Alamat</label>
+                    <input type="text" id="in-alamat" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Hobi</label>
+                    <input type="text" id="in-hobi" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tentang Saya</label>
+                    <textarea id="in-tentang" rows="4" required></textarea>
+                </div>
+
+                <button type="submit">Simpan & Terapkan ke Root Path</button>
+                <button type="button" class="reset-btn" onclick="resetDefault()">Reset Default</button>
+            </form>
+        </section>
+
+    </div>
+
+    <script>
+        // Data Awal (Default) jika Admin belum pernah mengubah konten
+        const defaultData = {
+            welcome: "Halo! Selamat Datang di Website Biodata Saya",
+            nama: "Glen henokh",
+            kelas: "XI-RPL (Rekayasa Perangkat Lunak)",
+            alamat: "Sidoarjo, Jawa Timur",
+            hobi: "Coding, Desain Grafis, Olahraga",
+            tentang: "Saya adalah siswa jurusan RPL yang sedang mempelajari pengembangan web dan arsitektur routing."
+        };
+
+        // Mengambil data dari penyimpanan browser (localStorage)
+        function getBiodata() {
+            const tersimpan = localStorage.getItem('data_biodata_diri');
+            return tersimpan ? JSON.parse(tersimpan) : defaultData;
+        }
+
+        // Menampilkan data ke halaman Publik (Root Path)
+        function renderPublic() {
+            const data = getBiodata();
+            document.getElementById('pub-welcome').textContent = data.welcome;
+            document.getElementById('pub-nama').textContent = data.nama;
+            document.getElementById('pub-kelas').textContent = data.kelas;
+            document.getElementById('pub-alamat').textContent = data.alamat;
+            document.getElementById('pub-hobi').textContent = data.hobi;
+            document.getElementById('pub-tentang').textContent = data.tentang;
+        }
+
+        // Mengisi form Admin dengan data yang sedang aktif
+        function renderAdminForm() {
+            const data = getBiodata();
+            document.getElementById('in-welcome').value = data.welcome;
+            document.getElementById('in-nama').value = data.nama;
+            document.getElementById('in-kelas').value = data.kelas;
+            document.getElementById('in-alamat').value = data.alamat;
+            document.getElementById('in-hobi').value = data.hobi;
+            document.getElementById('in-tentang').value = data.tentang;
+        }
+
+        // SISTEM ROUTING (Mengatur perpindahan #/ dan #/admin)
+        function handleRouting() {
+            const route = window.location.hash || '#/';
+            const viewPublic = document.getElementById('view-public');
+            const viewAdmin = document.getElementById('view-admin');
+            const navPublic = document.getElementById('nav-public');
+            const navAdmin = document.getElementById('nav-admin');
+
+            if (route === '#/admin') {
+                // Tampilkan Route Admin
+                viewPublic.classList.add('hidden');
+                viewAdmin.classList.remove('hidden');
+                navAdmin.classList.add('active');
+                navPublic.classList.remove('active');
+                renderAdminForm();
+            } else {
+                // Tampilkan Route Publik (Root Path)
+                viewAdmin.classList.add('hidden');
+                viewPublic.classList.remove('hidden');
+                navPublic.classList.add('active');
+                navAdmin.classList.remove('active');
+                renderPublic();
+            }
+        }
+
+        // Proses Simpan Data dari Form Admin
+        document.getElementById('form-admin').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const dataBaru = {
+                welcome: document.getElementById('in-welcome').value,
+                nama: document.getElementById('in-nama').value,
+                kelas: document.getElementById('in-kelas').value,
+                alamat: document.getElementById('in-alamat').value,
+                hobi: document.getElementById('in-hobi').value,
+                tentang: document.getElementById('in-tentang').value
+            };
+
+            // Simpan ke localStorage
+            localStorage.setItem('data_biodata_diri', JSON.stringify(dataBaru));
+
+            // Tampilkan notifikasi lalu pindah otomatis ke root path (#/)
+            const notif = document.getElementById('notif-sukses');
+            notif.style.display = 'block';
+            setTimeout(() => {
+                notif.style.display = 'none';
+                window.location.hash = '#/';
+            }, 800);
+        });
+
+        // Tombol Reset ke Data Awal
+        function resetDefault() {
+            localStorage.removeItem('data_biodata_diri');
+            renderAdminForm();
+            alert('Data dikembalikan ke pengaturan awal.');
+        }
+
+        // Jalankan router saat halaman dibuka dan saat URL berubah
+        window.addEventListener('hashchange', handleRouting);
+        window.addEventListener('DOMContentLoaded', handleRouting);
+    </script>
+</body>
+</html>
